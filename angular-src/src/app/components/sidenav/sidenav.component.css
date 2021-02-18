@@ -1,0 +1,15 @@
+
+mat-sidenav-container {
+    height: 100vh;
+    width: 300px;
+    background-color: #F5F5F5;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+mat-sidenav-content {
+    margin: 0;
+    padding: 10px;
+}

@@ -1,0 +1,6 @@
+<mat-toolbar>
+    <span>Otamot</span>
+    <button mat-button *ngIf="!authService.loggedIn()"><a [routerLink]="['/register']">Register</a></button>
+    <button mat-button *ngIf="!authService.loggedIn()"><a [routerLink]="['/login']">Login</a></button>
+    <button mat-button *ngIf="authService.loggedIn()"><a (click)="onLogout()">Logout</a></button>
+</mat-toolbar>
