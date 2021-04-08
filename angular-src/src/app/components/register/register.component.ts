@@ -14,6 +14,7 @@ export class RegisterComponent implements OnInit {
   username: String;
   email: String;
   password: String;
+  isRegistered = false;
 
   constructor(private validateService : ValidateService, private authService: AuthService, private router: Router) { }
 
@@ -40,8 +41,13 @@ export class RegisterComponent implements OnInit {
     // Register User
     this.authService.registerUser(user).subscribe( data => {
       if(data.success){
-        console.log('You are now registered!');
-        this.router.navigate(['/login']);
+        //console.log('You are now registered!');
+        this.isRegistered = true;
+        
+        
+        setTimeout(() => { this.router.navigate(['/login']);} , 2000);
+        
+        
       }
       else {
         console.log('Something went wrong');

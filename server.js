@@ -41,7 +41,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', require('./routes/proutes'));
 
 io.on('connection', (socket) => {
-    console.log("A user connected");
+    //console.log("A user connected");
     
     socket.emit("test event", 'here is some data');
 });

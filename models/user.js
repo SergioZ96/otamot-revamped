@@ -4,7 +4,13 @@ const bcrypt = require('bcrypt');
 const UserSchema = mongoose.Schema({
     username: String,
     email: String,
-    password: String
+    password: String,
+    chats: [
+        { 
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Chat" 
+        }
+    ]
 });
 /* 
 UserSchema.methods.getUserById = function(cb) {
@@ -16,6 +22,13 @@ UserSchema.statics.getUserById = function(id) {
         return this.findById(id).exec(); // using exec() returns a promise, there fore we dont need to use async/await
     }
     catch(err) {throw err;}
+};
+
+UserSchema.statics.getUserByUsername = async function(username) {
+    try{
+        return await this.findOne({username: username}).exec();
+    }
+    catch(err){ throw err; }
 };
 
 UserSchema.statics.getUserByEmail = async function(email) {
@@ -46,6 +59,24 @@ UserSchema.statics.comparePassword = function(candidatePassword, hash, callback)
         callback(null, isMatch);
     });
 }
+
+UserSchema.statics.getChats = async function(user_id){
+    try{
+        const chats = await User.findById(user_id, 'chats').exec();
+        if(chats === null){
+            return false;
+            //res.json({success: false, chats: "no chats"});
+        }
+        else{
+            return chats;
+            //res.json({success: true, chats: chats});
+        }
+    }
+    catch(err){ throw err; }
+    
+}
+
+
 
 const User = module.exports = mongoose.model('User', UserSchema);
 /* 

@@ -12,4 +12,14 @@ export class SidenavComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  /* Open model for new chat */
+  openModal() {
+    document.getElementById('modal_1').style.display = 'block';
+  }
+
+  /* Creating a new chat between users */
+  
+
+  /* Search chat/conversation that already exists */
+
 }

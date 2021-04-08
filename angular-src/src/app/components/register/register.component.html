@@ -1,5 +1,5 @@
 <div class="register-container"> 
-    <form class="register-form" (submit)="onRegisterSubmit()">
+    <form class="register-form" (submit)="onRegisterSubmit()" *ngIf="!isRegistered">
         <mat-form-field >
             <mat-label>Username</mat-label>
             <input matInput [(ngModel)]="username" name="username">
@@ -19,4 +19,5 @@
         
         <input type="submit" value="Submit">
     </form>
+    <h2 *ngIf="isRegistered">You are now registered!</h2>
 </div> 

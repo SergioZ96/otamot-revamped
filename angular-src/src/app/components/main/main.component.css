@@ -1,0 +1,15 @@
+.main-container {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+}
+
+    app-sidenav {
+        flex-grow: 1;
+    }
+
+    app-chat {
+        flex-grow: 4;
+    }

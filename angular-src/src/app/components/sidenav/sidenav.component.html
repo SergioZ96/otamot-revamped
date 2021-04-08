@@ -1,5 +1,15 @@
-<mat-sidenav-container>
-    <mat-sidenav-content><button mat-button color="primary">New Chat</button></mat-sidenav-content>
-    <mat-sidenav-content><input type="text" placeholder="Search Chat"></mat-sidenav-content>
-    <mat-sidenav-content>Messages</mat-sidenav-content>
+<mat-sidenav-container >
+    <!-- <mat-sidenav-content class="top-sidenav"><div></div></mat-sidenav-content> -->
+    <mat-sidenav-content class="newchat-button"><button mat-button color="primary" (click)="openModal()">New Chat</button></mat-sidenav-content>
+    
+    <mat-sidenav-content class="search-chat"><input type="text" placeholder="Search Chat"></mat-sidenav-content>
+
+
+    <mat-sidenav-content class="message-title"><h2>Messages</h2></mat-sidenav-content>
+
+    <mat-sidenav-content class="chat-list">
+        <div id="chats">
+            
+        </div>
+    </mat-sidenav-content>
 </mat-sidenav-container>

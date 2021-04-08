@@ -1,9 +1,10 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { Injector, NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { JwtModule } from '@auth0/angular-jwt';
+import { createCustomElement } from '@angular/elements';
 
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
@@ -22,6 +23,11 @@ import { ValidateService } from './services/validate.service';
 import { AuthService } from './services/auth.service';
 import { AuthGuard } from './guards/auth.guard';
 import { WebsocketService} from './services/websocket.service';
+import { ModalComponent } from './components/modal/modal.component';
+import { InterceptorService } from './services/interceptor.service';
+import { ChatComponent } from './components/chat/chat.component';
+import { ThumbComponent } from './components/thumb/thumb.component';
+
 
 export function tokenGetter(){
   return localStorage.getItem("jwt");
@@ -40,7 +46,10 @@ const appRoutes: Routes = [
     LoginComponent,
     RegisterComponent,
     MainComponent,
-    SidenavComponent
+    SidenavComponent,
+    ModalComponent,
+    ChatComponent,
+    ThumbComponent
   ],
   imports: [
     BrowserModule,
@@ -59,7 +68,16 @@ const appRoutes: Routes = [
       }
     })
   ],
-  providers: [ValidateService, AuthService, AuthGuard, WebsocketService],
+  providers: [ValidateService, AuthService, AuthGuard, WebsocketService, { provide: HTTP_INTERCEPTORS, useClass: InterceptorService, multi: true}],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+
+  constructor(private injector: Injector) {
+    // Wrapping our Thumb Component and turning it into a Web Component, allowing it to stand as a custom element
+    const thumb = createCustomElement(ThumbComponent, { injector });
+    customElements.define('custom-thumb', thumb);
+  }
+
+  ngDoBootstrap() {};
+}

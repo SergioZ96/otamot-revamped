@@ -1,0 +1,41 @@
+.modal-wrapper{
+    display: none;
+}
+
+/* this holds the CSS display of the modal */
+.modal{
+    /* makes it hover above all elements*/
+    position: fixed;
+    top: 30px;
+    bottom: 0;
+    left: 300px;
+    width: 500px;
+
+    /* z-index must be higher than .modal-background */
+    z-index: 1000;
+}
+
+.modal-body{
+    background: #fff;
+    margin: 40px;
+    padding: 20px;
+}
+
+.modal-background{
+    /* modal background fixed across whole screen */
+    z-index: 900;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    /* for semi-transparent background color */
+    background-color: #000;
+    /* makes the below elements visible to a degree */
+    opacity: 0.75;
+}
+
+body .jw-modal-open {
+    /* body overflow is hidden to hide main scrollbar when modal window is open */
+    overflow: hidden;
+}

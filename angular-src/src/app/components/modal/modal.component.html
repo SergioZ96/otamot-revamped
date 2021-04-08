@@ -1,0 +1,11 @@
+<div class="modal-wrapper" id="modal_1">  
+    <div class="modal"> 
+        <div class="modal-body">
+            <input type="text" class="recip_text_field" [(ngModel)]="recip_username" name="recip_username" placeholder="Enter a username" >
+            <button (click)="checkUser()">Start Chat</button>
+            <button (click)="closeModal()">Close</button>
+            <p id="modal-message"></p>
+        </div>
+    </div>
+    <div class="modal-background"></div>
+</div>  
