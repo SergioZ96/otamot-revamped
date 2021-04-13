@@ -44,6 +44,7 @@ io.on('connection', (socket) => {
     //console.log("A user connected");
     
     socket.emit("test event", 'here is some data');
+    
 });
 
 http.listen(port, () => {

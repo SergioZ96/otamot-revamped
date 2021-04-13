@@ -6,10 +6,17 @@ import { Chat } from '../interfaces/chat';
 @Injectable({
   providedIn: 'root'
 })
+
+/* ChatService
+    - a shared service used to send and retrieve messages and data between users/chats.
+    - selectedUser helps components identify which user is the current recipient
+*/
+
 export class ChatService {
 
   private _chats:Chat[] = [];
-
+  selectedChat: any;
+  selectedUser: any;
   username: any;
 
   constructor(private http: HttpClient, public jwtHelper: JwtHelperService) { }
@@ -33,6 +40,12 @@ export class ChatService {
   check_user(username){
     let httpOptions = { headers: new HttpHeaders({'Content-Type': 'application/json'})};
     return this.http.post<any>('http://localhost:3000/newchat', {username: username}, httpOptions);
+  }
+
+  send(message_info){
+    // message_info is an object containing the selectedUser info as well as the message
+    let httpOptions = { headers: new HttpHeaders({'Content-Type': 'application/json'})};
+    return this.http.post<any>('http://localhost:3000/message', message_info, httpOptions);
   }
 
 

@@ -32,6 +32,7 @@ export class ModalComponent implements OnInit {
 
     this.chatservice.check_user(this.recip_username).subscribe(data => {
       if(data.status){
+        //console.log(data.recipient_info)
         document.getElementById('modal_1').style.display = 'none';
         let thumbnail = document.createElement("custom-thumb");
         
@@ -41,6 +42,12 @@ export class ModalComponent implements OnInit {
         //let thumbname = thumbnail.getElementsByTagName("h3")[0].innerHTML = `${this.recip_username}`;
         document.getElementById('chats').appendChild(thumbnail);
         document.getElementById('recip_name').innerHTML = `${this.recip_username}`;
+        document.getElementById('recip_id').nodeValue = `${data.recipient_info._id}`;
+        this.chatservice.selectedUser = {
+          id: data.recipient_info._id,
+          username: this.recip_username
+        };
+        this.chatservice.selectedChat = "";
       }
       else{
         document.getElementById('modal-message').innerHTML = "User was not found";

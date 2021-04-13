@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
+const db = require('../config/database');
 
 const User = require('../models/user');
 const Chat = require('../models/chat');
@@ -90,14 +91,17 @@ router.get('/email/:email', async (req, res) => {
 });
 
 router.get('/chats', passport.authenticate('jwt', {session: false}), async ( req, res) => {
-    const chat_results = await User.getChats(req.user._id);
+    /* const chat_results = await User.getChats(req.user._id);
     if(!chat_results){
         res.json({success: false});
     }
     else{
         res.json({success: true, chats: chat_results});
-    }
-})
+    } */
+    let chats = await Chat.getChats(req.user._id);
+    console.log(chats);
+    res.json({success: true, chats});
+});
 
 router.post('/newchat', passport.authenticate('jwt', {session: false}), async (req, res) => {
     const recip = req.body.username;
@@ -114,6 +118,50 @@ router.post('/newchat', passport.authenticate('jwt', {session: false}), async (r
     }
 }); 
 
+
+
+/* This route receives an object 
+    message_info = {
+        user: {
+            id,
+            username
+        },
+        message
+    }
+
+    Note: the user is the recipient of the chat
+*/
+router.post('/message', passport.authenticate('jwt', {session: false}), async (req, res) => {
+    // Now here we have to store the message in the chat collection and assign the chat id to all users
+    // Creating a new chat...
+    let newChat = new Chat({
+        users: [
+            {
+                _id: db.Types.ObjectId(req.user._id)
+            },
+            {
+                _id: db.Types.ObjectId(req.body.user.id)
+            }
+        ],
+        messages: [{
+            author: req.user._id,
+            recip: [req.body.user.username],
+            date_time: req.body.datetime,
+            message_body: req.body.message
+        }]
+    });
+    let result = await Chat.createChat(newChat);
+    console.log(result);
+    /* let newChat_info = {
+        author: req.user._id,
+        recip: req.body.user.id,
+        message: req.body.message
+    }; */
+
+    res.json({success: true, result}); 
+    //Chat.findOne({_id:})
+
+});
 //
 
 module.exports = router;
