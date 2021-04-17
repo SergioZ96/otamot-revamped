@@ -4,7 +4,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { JwtModule } from '@auth0/angular-jwt';
-import { createCustomElement } from '@angular/elements';
 
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
@@ -26,7 +25,8 @@ import { WebsocketService} from './services/websocket.service';
 import { ModalComponent } from './components/modal/modal.component';
 import { InterceptorService } from './services/interceptor.service';
 import { ChatComponent } from './components/chat/chat.component';
-import { ThumbComponent } from './components/thumb/thumb.component';
+import { ChatService } from './services/chat.service';
+import { ThumbnailComponent } from './components/thumbnail/thumbnail.component';
 
 
 export function tokenGetter(){
@@ -49,7 +49,7 @@ const appRoutes: Routes = [
     SidenavComponent,
     ModalComponent,
     ChatComponent,
-    ThumbComponent
+    ThumbnailComponent
   ],
   imports: [
     BrowserModule,
@@ -68,16 +68,7 @@ const appRoutes: Routes = [
       }
     })
   ],
-  providers: [ValidateService, AuthService, AuthGuard, WebsocketService, { provide: HTTP_INTERCEPTORS, useClass: InterceptorService, multi: true}],
+  providers: [ValidateService, AuthService, AuthGuard, WebsocketService, ChatService, { provide: HTTP_INTERCEPTORS, useClass: InterceptorService, multi: true}],
   bootstrap: [AppComponent]
 })
-export class AppModule {
-
-  constructor(private injector: Injector) {
-    // Wrapping our Thumb Component and turning it into a Web Component, allowing it to stand as a custom element
-    const thumb = createCustomElement(ThumbComponent, { injector });
-    customElements.define('custom-thumb', thumb);
-  }
-
-  ngDoBootstrap() {};
-}
+export class AppModule { }

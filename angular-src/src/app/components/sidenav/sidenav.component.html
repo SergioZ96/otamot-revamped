@@ -9,7 +9,8 @@
 
     <mat-sidenav-content class="chat-list">
         <div id="chats">
-            
+            <app-thumbnail *ngFor="let chat of chat_list" [thumb_chat]="chat" ></app-thumbnail>
         </div>
+        
     </mat-sidenav-content>
 </mat-sidenav-container>

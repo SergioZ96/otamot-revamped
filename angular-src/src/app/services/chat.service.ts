@@ -14,7 +14,7 @@ import { Chat } from '../interfaces/chat';
 
 export class ChatService {
 
-  private _chats:Chat[] = [];
+  _chats_array:Chat[] = [];
   selectedChat: any;
   selectedUser: any;
   username: any;
@@ -22,13 +22,13 @@ export class ChatService {
   constructor(private http: HttpClient, public jwtHelper: JwtHelperService) { }
 
   //For shared data with chats
-  pushChat(chat:Chat) {
+  /* pushChat(chat:Chat) {
     this._chats.push(chat);
-  }
+  } */
 
-  getChatlist() {
+  /* getChatlist() {
     return this._chats;
-  }
+  } */
 
   // For making requests to server
 

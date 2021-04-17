@@ -1,4 +1,6 @@
 export interface Chat {
-    recipient: string,
-    messages: any
+    messages: Array<any>,
+    users: Array<any>,
+    chat_id: any,
+    recip: Array<any>
 }
