@@ -23,7 +23,7 @@ export class SidenavComponent implements OnInit {
             chat_id: data.chats[i]._id,
             recip: data.chats[i].messages[0].recip
           };
-          //this.chatservice._chats_array.push(this.chat);
+          this.chatservice._chats_array.push(this.unset_chat);
           this.chat_list.push(this.unset_chat);
       
           /* let thumbnail = document.createElement('custom-thumb');

@@ -21,9 +21,9 @@ export class MainComponent implements OnInit {
       }
     });
 
-    this.webSocketService.listen("test event").subscribe((data) => {
+    /* this.webSocketService.listen("test event").subscribe((data) => {
       console.log(data);
-    });
+    }); */
   }
 
   

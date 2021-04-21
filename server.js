@@ -42,10 +42,27 @@ app.use('/', require('./routes/proutes'));
 
 io.on('connection', (socket) => {
     //console.log("A user connected");
+    // id will be sent from the client, in order to maintain and join a room with a static id
+    const id = socket.handshake.query.id;
+    socket.join(id);
+
+    /* Code from Web Dev Simplified on YouTube */
+    socket.on('send-message', ({ recipients, message }) => {
+        recipients.forEach(recipient => {
+            const newRecipients = recipients.filter(r => r !== recipient);
+            newRecipients.push(id);
+            socket.broadcast.to(recipient).emit('receive-message', {
+                recipients: newRecipients, send: id, message
+            });
+        })
+    });
+
     
     socket.emit("test event", 'here is some data');
     
 });
+
+
 
 http.listen(port, () => {
     console.log(`Server started on port ${port}`);

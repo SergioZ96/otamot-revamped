@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Chat } from '../interfaces/chat';
+import { Observable, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,20 @@ import { Chat } from '../interfaces/chat';
 */
 
 export class ChatService {
+
+  // this will be our string subject variable
+  public subVar = new Subject<string>();
+
+
+  // this be how we can update the value of our string subject
+  public updateSubject(newsubVar: string) {
+    this.subVar.next(newsubVar);
+  }
+
+  public receiveSubject(): Observable<string> {
+    return this.subVar.asObservable();
+  }
+
 
   _chats_array:Chat[] = [];
   selectedChat: any;

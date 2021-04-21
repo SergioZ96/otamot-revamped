@@ -6,17 +6,26 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class WebsocketService {
+  /* A Socket is the fundamental class for interacting with the server.
+      It is basically an EventEmitter which sends events to -- and receive events from -- the server over the network */
   private socket: Socket
   uri: string = "http://localhost:3000";
 
 
   constructor() {
     // Added some cors options to prevent 404 errors, on client side as well as on server side
-    this.socket = io(this.uri, {
+
+    /* io([url][,options]) function which returns a Socket instance */
+    /* this.socket = io(this.uri, {
       withCredentials: true
+    }); */
+  }
+  useSocket(id: string){
+    this.socket = io(this.uri, {
+      withCredentials: true,
+      query: { id }
     });
   }
-
 
   listen(eventName: string){
     return new Observable((subscriber) => {

@@ -1,10 +1,18 @@
 <div class="chat-container">
-    <div class="messages">
-
+    <div class="chat_name">
+        <h3>
+            <!-- The Safe Navigation Operator 'Object?.path' is very useful to protect against null and 
+                undefined values in property paths -->
+            {{ chat?.recip[0]}}
+        </h3>
+    </div>
+    <div id="messages">
+        
+            <div *ngIf="chat"><span>{{ chat?.messages[0]?.message_body }}</span></div>
     </div>
 
     <div class="message_input">
-        <input type=text [(ngModel)]="message" >
-        <button (click)="sendMessage()">Send</button>
+        <input #message type="text" (keyup.enter)="sendMessage(message.value); message.value='';" >
+        <button id="send_button" (click)="sendMessage(message.value); message.value=''; ">Send</button>
     </div>
 </div>

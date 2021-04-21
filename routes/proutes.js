@@ -151,7 +151,7 @@ router.post('/message', passport.authenticate('jwt', {session: false}), async (r
         }]
     });
     let result = await Chat.createChat(newChat);
-    console.log(result);
+    //console.log(result);
     /* let newChat_info = {
         author: req.user._id,
         recip: req.body.user.id,

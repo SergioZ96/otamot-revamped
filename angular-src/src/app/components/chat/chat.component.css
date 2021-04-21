@@ -7,10 +7,25 @@
     
 }
 
-    .messages{
+    #messages{
         flex-grow: 5;
         background-color: yellow;
     }
+        #messages div {
+            margin-top: 18px;
+            margin-left: 10px;
+            margin-right: 10px;
+            
+            
+        }
+            #messages div span {
+                
+                border:1px solid blue;
+                background-color: blue;
+                padding: 5px;
+                border-radius: 5px;
+                color: white;
+            }
 
     .message_input{
         flex-grow: 1;
