@@ -27,6 +27,7 @@ import { InterceptorService } from './services/interceptor.service';
 import { ChatComponent } from './components/chat/chat.component';
 import { ChatService } from './services/chat.service';
 import { ThumbnailComponent } from './components/thumbnail/thumbnail.component';
+import { ThumbDirective } from './directives/thumb.directive';
 
 
 export function tokenGetter(){
@@ -49,7 +50,8 @@ const appRoutes: Routes = [
     SidenavComponent,
     ModalComponent,
     ChatComponent,
-    ThumbnailComponent
+    ThumbnailComponent,
+    ThumbDirective
   ],
   imports: [
     BrowserModule,

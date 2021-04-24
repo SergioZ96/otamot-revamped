@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 export class WebsocketService {
   /* A Socket is the fundamental class for interacting with the server.
       It is basically an EventEmitter which sends events to -- and receive events from -- the server over the network */
-  private socket: Socket
+  public socket: Socket
   uri: string = "http://localhost:3000";
 
 
@@ -22,13 +22,14 @@ export class WebsocketService {
   }
   useSocket(id: string){
     this.socket = io(this.uri, {
+      autoConnect: false,
       withCredentials: true,
       query: { id }
     });
   }
 
   listen(eventName: string){
-    return new Observable((subscriber) => {
+    return new Observable<any>((subscriber) => {
       this.socket.on(eventName, (data) => {
         subscriber.next(data);
       })

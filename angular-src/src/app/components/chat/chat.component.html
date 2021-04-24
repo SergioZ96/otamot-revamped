@@ -8,7 +8,8 @@
     </div>
     <div id="messages">
         
-            <div *ngIf="chat"><span>{{ chat?.messages[0]?.message_body }}</span></div>
+            <!-- <div *ngIf="chat" class="author"><span class="author">{{ chat?.messages[0]?.message_body }}</span></div> -->
+            <p *ngIf="chat" class="author">{{ chat?.messages[0]?.message_body }}</p>
     </div>
 
     <div class="message_input">

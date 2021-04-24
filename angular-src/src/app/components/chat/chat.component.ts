@@ -45,6 +45,10 @@ export class ChatComponent implements OnInit {
         }
       });
     });
+    
+    /* this.webSocketService.listen("receive-message").subscribe((data) => {
+      console.log(data);
+    }); */
 
   
   }
@@ -53,15 +57,30 @@ export class ChatComponent implements OnInit {
 
 
   sendMessage(message: string) {
-
+    // Here, we select our div that holds the messages to be displayed
     let message_container = this.renderer.selectRootElement('#messages', true);
-    let message_element = this.renderer.createElement('div');
-    let span_element = this.renderer.createElement('span');
+
+    // Creates a new div element
+    //let message_element = this.renderer.createElement('div');
+    //this.renderer.addClass(message_element, "author");
+
+    // Creates a new span element
+    let span_element = this.renderer.createElement('p');
+    this.renderer.addClass(span_element, "author");
+
+    // Creates text
     let text = this.renderer.createText(message);
-    this.renderer.appendChild(span_element, text);
-    this.renderer.appendChild(message_element, span_element);
-    this.renderer.appendChild(message_container, message_element);
-    
+
+    this.renderer.appendChild(span_element, text); // adds text to span element
+    //this.renderer.appendChild(message_element, span_element); // adds span to div element
+    //this.renderer.appendChild(message_container, message_element); // adds div element to message container
+    this.renderer.appendChild(message_container, span_element);
+
+    let recipients = this.chat.users;
+    this.webSocketService.emit('send-message',{recipients, message });
+
+
+
     /* let user = this.chatService.selectedUser;
     let chat_id = this.chatService.selectedChat;
     let now = new Date();

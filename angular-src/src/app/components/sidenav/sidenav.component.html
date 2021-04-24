@@ -9,6 +9,9 @@
 
     <mat-sidenav-content class="chat-list">
         <div id="chats">
+            <!-- Below we call our appThumb directive to let Angular know we want to
+                    dynamically add a Thumbnail component -->
+            <ng-template appThumb></ng-template>
             <app-thumbnail *ngFor="let chat of chat_list" [thumb_chat]="chat" ></app-thumbnail>
         </div>
         

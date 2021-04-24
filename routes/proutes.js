@@ -99,7 +99,7 @@ router.get('/chats', passport.authenticate('jwt', {session: false}), async ( req
         res.json({success: true, chats: chat_results});
     } */
     let chats = await Chat.getChats(req.user._id);
-    console.log(chats);
+    //console.log(chats);
     res.json({success: true, chats});
 });
 

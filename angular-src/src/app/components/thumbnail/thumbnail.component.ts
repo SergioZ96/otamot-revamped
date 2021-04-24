@@ -10,11 +10,17 @@ import { Chat } from '../../interfaces/chat';
 })
 export class ThumbnailComponent implements OnInit {
   @Input() thumb_chat: Chat;
+  @Input() new_recip: string[];
   chat_id: string;
+  recipient_name: string;
+  
 
   constructor(private chatservice: ChatService, private webSocketService: WebsocketService) { }
 
   ngOnInit(): void {
+    /* let self = localStorage.getItem('user');
+    this.thumb_chat */
+
   }
 
   chatSelection(chat_id){
@@ -23,6 +29,10 @@ export class ThumbnailComponent implements OnInit {
   }
 
   joinRoom(){
+    //users is an array of author(current user) and recipient ids - [ author_id, recipient_id]
+    //this.webSocketService.useSocket(this.thumb_chat.users[1]);
+    this.webSocketService.useSocket(this.thumb_chat.chat_id);
+    
     /* this.webSocketService.listen("private").subscribe((data) => {
       console.log(data);
     }); */

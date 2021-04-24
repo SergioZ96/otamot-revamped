@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit } from '@angular/core';
+import { Component, Renderer2, OnInit } from '@angular/core';
 import { ChatService } from '../../services/chat.service';
 import { Chat } from '../../interfaces/chat';
  
@@ -19,7 +19,7 @@ export class ModalComponent implements OnInit {
 
   recip_username: string;
 
-  constructor(private chatservice: ChatService) { }
+  constructor(private chatservice: ChatService, private renderer: Renderer2) { }
 
   ngOnInit(): void {
     
@@ -32,22 +32,14 @@ export class ModalComponent implements OnInit {
 
     this.chatservice.check_user(this.recip_username).subscribe(data => {
       if(data.status){
-        //console.log(data.recipient_info)
-        document.getElementById('modal_1').style.display = 'none';
-        let thumbnail = document.createElement("custom-thumb");
+        // updateModal function passes recipient id and username to an Observable, to be accessed by Sidenav Component
+        this.chatservice.updateModal([data.recipient_info._id, this.recip_username]);
         
-        /* let doc = thumbnail.getElementsByTagName("h3");
-        console.log(doc); */
-        //document.getElementsByTagName("h3")[0].innerHTML = `${this.recip_username}`;
-        //let thumbname = thumbnail.getElementsByTagName("h3")[0].innerHTML = `${this.recip_username}`;
-        document.getElementById('chats').appendChild(thumbnail);
-        document.getElementById('recip_name').innerHTML = `${this.recip_username}`;
-        document.getElementById('recip_id').nodeValue = `${data.recipient_info._id}`;
-        this.chatservice.selectedUser = {
-          id: data.recipient_info._id,
-          username: this.recip_username
-        };
-        this.chatservice.selectedChat = "";
+
+        // Hides the modal after starting new chat
+        let modal = this.renderer.selectRootElement('#modal_1', true);
+        this.renderer.setStyle(modal, 'display', 'none');
+      
       }
       else{
         document.getElementById('modal-message').innerHTML = "User was not found";

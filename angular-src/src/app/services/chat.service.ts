@@ -28,6 +28,16 @@ export class ChatService {
     return this.subVar.asObservable();
   }
 
+  public modalVar = new Subject<string[]>();
+
+  public updateModal(newmodalVar: string[]){
+    this.modalVar.next(newmodalVar);
+  }
+
+  public receiveModal(): Observable<string[]> {
+    return this.modalVar.asObservable();
+  }
+
 
   _chats_array:Chat[] = [];
   selectedChat: any;
