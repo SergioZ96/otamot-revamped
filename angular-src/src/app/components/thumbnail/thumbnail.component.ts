@@ -12,31 +12,28 @@ export class ThumbnailComponent implements OnInit {
   @Input() thumb_chat: Chat;
   @Input() new_recip: string[];
   chat_id: string;
-  recipient_name: string;
+  recip_username: string;
   
 
   constructor(private chatservice: ChatService, private webSocketService: WebsocketService) { }
 
   ngOnInit(): void {
-    /* let self = localStorage.getItem('user');
-    this.thumb_chat */
-
+    if(this.thumb_chat){
+      this.extract_recip_username(this.thumb_chat.recip[0]);
+    }
+    
+    
+  }
+  /* Finds the recipients username from the Chat input */
+  extract_recip_username(recip_id){
+    let user = this.thumb_chat.users.find( e => e._id._id == recip_id);
+    this.recip_username = user._id.username;
   }
 
-  chatSelection(chat_id){
+  /* chatSelection(chat_id){
     this.chatservice.updateSubject(chat_id);
     this.chat_id = chat_id;
-  }
+  } */
 
-  joinRoom(){
-    //users is an array of author(current user) and recipient ids - [ author_id, recipient_id]
-    //this.webSocketService.useSocket(this.thumb_chat.users[1]);
-    this.webSocketService.useSocket(this.thumb_chat.chat_id);
-    
-    /* this.webSocketService.listen("private").subscribe((data) => {
-      console.log(data);
-    }); */
-    //this.webSocketService.emit("private", this.chat_id)
-  }
 
 }

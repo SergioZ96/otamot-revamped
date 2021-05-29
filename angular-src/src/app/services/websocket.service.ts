@@ -8,9 +8,9 @@ import { Observable } from 'rxjs';
 export class WebsocketService {
   /* A Socket is the fundamental class for interacting with the server.
       It is basically an EventEmitter which sends events to -- and receive events from -- the server over the network */
-  public socket: Socket
-  uri: string = "http://localhost:3000";
-
+  //public socket: Socket
+  //uri: string = "http://localhost:3000";
+  public socket = io('http://localhost:3000');
 
   constructor() {
     // Added some cors options to prevent 404 errors, on client side as well as on server side
@@ -20,13 +20,16 @@ export class WebsocketService {
       withCredentials: true
     }); */
   }
-  useSocket(id: string){
-    this.socket = io(this.uri, {
+  //connect(id: string = ''){
+    //this.socket = io(this.uri, { autoConnect: false, withCredentials: true } );
+    
+    /* this.socket = io(this.uri, {
       autoConnect: false,
       withCredentials: true,
       query: { id }
     });
-  }
+    console.log(this.socket); */
+  //}
 
   listen(eventName: string){
     return new Observable<any>((subscriber) => {
@@ -37,6 +40,7 @@ export class WebsocketService {
   }
 
   emit(eventName: string, data: any){
+    console.log(data);
     this.socket.emit(eventName, data);
   }
 

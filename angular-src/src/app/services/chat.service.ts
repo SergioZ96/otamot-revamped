@@ -15,16 +15,37 @@ import { Observable, Subject } from 'rxjs';
 
 export class ChatService {
 
+  public conversation_array = new Subject<Chat[]>();
+
+  public updateConvos(updated_convo_array: Chat[]) {
+    this.conversation_array.next(updated_convo_array);
+  }
+
+  public receiveConvos(): Observable<Chat[]> {
+    return this.conversation_array.asObservable();
+  }
+
+  public event = new Subject<string>();
+
+  public triggerEvent(someEvent: string) {
+    this.event.next(someEvent);
+  }
+
+  public receiveEvent(): Observable<string> {
+    return this.event.asObservable();
+  }
+
   // this will be our string subject variable
-  public subVar = new Subject<string>();
+  public subVar = new Subject<string[]>();
 
 
-  // this be how we can update the value of our string subject
-  public updateSubject(newsubVar: string) {
+  // this will be how we can update the value of our string subject
+  // Mainly used to update which chat_id we are working with 
+  public updateSubject(newsubVar: string[]) {
     this.subVar.next(newsubVar);
   }
 
-  public receiveSubject(): Observable<string> {
+  public receiveSubject(): Observable<string[]> {
     return this.subVar.asObservable();
   }
 

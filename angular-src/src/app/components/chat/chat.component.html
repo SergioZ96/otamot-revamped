@@ -1,9 +1,12 @@
 <div class="chat-container">
     <div class="chat_name">
-        <h3>
+        <h3 *ngIf="chat">
             <!-- The Safe Navigation Operator 'Object?.path' is very useful to protect against null and 
                 undefined values in property paths -->
             {{ chat?.recip[0]}}
+        </h3>
+        <h3 *ngIf="chat_recip">
+            {{ chat_recip }}
         </h3>
     </div>
     <div id="messages">

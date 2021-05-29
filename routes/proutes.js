@@ -53,6 +53,7 @@ router.post('/authenticate', async (req, res) => {
                     }
                 });
             }
+            
             else{
                 return res.json({success: false, msg: "wrong password"});
             }
@@ -98,8 +99,10 @@ router.get('/chats', passport.authenticate('jwt', {session: false}), async ( req
     else{
         res.json({success: true, chats: chat_results});
     } */
-    let chats = await Chat.getChats(req.user._id);
-    //console.log(chats);
+    //console.log(req.user._id);
+    let chats = await Chat.getChats(db.Types.ObjectId(req.user._id));
+
+    console.log(chats);
     res.json({success: true, chats});
 });
 

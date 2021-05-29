@@ -1,11 +1,17 @@
 <!--If new_recip variable is populated, Display thumbnail for possible new chat -->
 <div *ngIf="new_recip" >
     <h3 id="recip_name">{{new_recip[1]}}</h3>
+    <input type="hidden" value="new_recip[0]"/>
+    <input type="hidden" value="new_recip[2]"/>
 </div>
 
 <!-- Else display existing chat -->
-<div *ngIf="!new_recip" (click)="chatSelection(thumb_chat.chat_id); joinRoom();">
-    <h3 id="recip_name">{{ thumb_chat.recip[0] }}</h3>
-</div>
+<!-- thumb_chat is not being used currently -->
+<!-- <div *ngIf="!new_recip" (click)="chatSelection(thumb_chat.chat_id);"> -->
+<!-- <div>
+    <h3 id="recip_name">{{ recip_username }}</h3>
+    <input type="hidden" value="thumb_chat.recip[0]"/>
+    <input type="hidden" value="thumb_chat.chat_id" />
+</div> -->
 
 

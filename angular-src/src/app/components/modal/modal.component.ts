@@ -1,4 +1,4 @@
-import { Component, Renderer2, OnInit } from '@angular/core';
+import { Component, Renderer2, OnInit, Input } from '@angular/core';
 import { ChatService } from '../../services/chat.service';
 import { Chat } from '../../interfaces/chat';
  
@@ -16,12 +16,30 @@ export class ModalComponent implements OnInit {
    * */
 
   //private _chat: Chat = 
-
+  @Input() convos: Chat[];
   recip_username: string;
+  new_convo: Chat;
+  chat_list: Chat[];
 
-  constructor(private chatservice: ChatService, private renderer: Renderer2) { }
+  constructor(public chatservice: ChatService, private renderer: Renderer2) { }
 
   ngOnInit(): void {
+
+    /* Trying to obtain the current list of chats and setting it to chat_list */
+    this.chatservice.receiveConvos().subscribe((convo_array) => {
+      this.chat_list = convo_array;
+    });
+
+    /* Attempts to retrieve the current list of chats, push the new conversation, and update the Observable with a new Chat[] */
+    /* if(this.new_convo){
+      this.chatservice.receiveConvos().subscribe((convo_array) => {
+        convo_array.push(this.new_convo);
+        console.log(convo_array);
+        this.chatservice.updateConvos(convo_array);
+      });
+    } */
+      
+    
     
   }
 
@@ -31,9 +49,51 @@ export class ModalComponent implements OnInit {
     // Else, notify the user the username was not found
 
     this.chatservice.check_user(this.recip_username).subscribe(data => {
+      /* 
+        data = {
+            status: true,
+            recipient_info: {
+              chats: [],
+              email: string,
+              password: string,
+              username: string,
+              _id: string
+            }
+        } 
+      */
       if(data.status){
-        // updateModal function passes recipient id and username to an Observable, to be accessed by Sidenav Component
-        this.chatservice.updateModal([data.recipient_info._id, this.recip_username]);
+        //console.log(data);
+        let found_user;
+        for(let i = 0; i < this.chatservice._chats_array.length; i++){
+          let some_chat_users = this.chatservice._chats_array[i].users;
+          found_user = some_chat_users.find( e => e._id.username == this.recip_username);
+          if(found_user){
+            break;
+          }
+        }
+        if(found_user){
+          
+          //this.chatservice.updateModal([undefined, undefined]);
+          this.chatservice.updateSubject([found_user._id._id, found_user._id.username, found_user._id.chats[0]]);
+          console.log(found_user);
+        }
+        else{ // will be a new conversation
+          console.log("This will be a new convo");
+          this.new_convo  = {
+            messages: [],
+            users: [data.recipient_info.username],
+            chat_id: undefined,
+            recip: [data.recipient_info._id]
+          };
+          console.log(this.new_convo);
+          this.chat_list.push(this.new_convo);
+          this.chatservice.updateConvos(this.chat_list);
+          
+          
+          //this.chatservice.updateModal([data.recipient_info._id, this.recip_username]);
+          this.chatservice.updateSubject([data.recipient_info._id, this.recip_username, undefined]);
+        }
+       
         
 
         // Hides the modal after starting new chat
@@ -47,6 +107,8 @@ export class ModalComponent implements OnInit {
     });
     
   }
+
+
 
   /* Our function used to close the new chat modal */
   closeModal(){

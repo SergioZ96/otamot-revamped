@@ -3,6 +3,8 @@ const path = require('path');
 const cors = require('cors'); // for cross origin resource sharing
 const passport = require('passport');
 const mongoose = require('./config/database');
+const Chat = require('./models/chat');
+const User = require('./models/user');
 
 const app = express();
 const http = require('http').Server(app);
@@ -38,29 +40,95 @@ app.use(express.static(path.join(__dirname, 'public')));
     res.send("hello world");
 }); */
 
-app.use('/', require('./routes/proutes'));
+const router = require('./routes/proutes');
+
+app.use('/', router);
+
+/* users array to keep track of users connected to the socket with their current socket.id's */
+let users = [];
+
 
 io.on('connection', (socket) => {
-    //console.log("A user connected");
-    // id will be sent from the client, in order to maintain and join a room with a static id
-    const id = socket.handshake.query.id;
-    socket.join(id);
-
-    /* Code from Web Dev Simplified on YouTube */
-    socket.on('send-message', ({ recipients, message }) => {
-        recipients.forEach(recipient => {
-            const newRecipients = recipients.filter(r => r !== recipient);
-            newRecipients.push(id);
-            socket.broadcast.to(recipient).emit('receive-message', {
-                recipients: newRecipients, send: id, message
-            });
-        })
-    });
-
-    //socket.on('receive-message'),
 
     
-    socket.emit("test event", 'here is some data');
+
+    socket.on('setSocket', async (socket_info) => {
+
+        let convos = await User.getChats(socket_info.user_id);
+        socket.join(convos);
+        socket.join(socket_info.user_id);
+
+
+
+        // Used for joining rooms corresponding to socket.ids
+
+            /* let userSocket = {
+                socket_id : socket.id,
+                user_id : socket_info.user_id
+            }
+            // Only push the user to the users array if not already there 
+            if(!users.some( e => e.user_id == userSocket.user_id)){
+                users.push(userSocket);
+            }
+            // Update the socket.id for the user already in the users array
+            else {
+                users.find(v => v.user_id === userSocket.user_id).socket_id = socket.id;
+            }
+            console.log(users); */
+
+        
+    })
+    // allows our recipient of new conversations to join newly established rooms
+    socket.on('join-room', (newchat_id) => {
+        socket.join(newchat_id);
+    });
+   
+    
+    socket.on('private-message', async (data) => {
+        // handles the creation of new chat upon first message being sent
+        if(data.newchat){ 
+            // if newchat is set to true, meaning that the message is the first of a new conversation
+
+            // create a new chat between user and recipient 
+            let newchat = new Chat({
+                users: [
+                    {
+                        _id: mongoose.Types.ObjectId(data.author_id)
+                    },
+                    {
+                        _id: mongoose.Types.ObjectId(data.recipient_id)
+                    }
+                ],
+                messages: [{
+                    author: data.author_id,
+                    recip: [data.recipient_id],
+                    date_time: data.date_time,
+                    message_body: data.message
+                }]
+            });
+            // result 
+            let result = await Chat.createChat(newchat);
+            // get the chat id
+            // have the user join the chat, and somehow let the recipient join the chat as well
+            //socket.join(result._id);
+            // will emit a join-room event to recipient to let them know to join a new room 
+            // corresponding to new chat
+            //console.log("Telling the recipient to join the new conversation...");
+            socket.broadcast.to(data.recipient_id).emit('join-room', result._id);
+            //console.log("Relaying to myself what the new chat id is...");
+            socket.broadcast.to(data.author_id).emit('newroom-chatid', result._id);
+            // After the recipient has joined the new chat room, the user will finally be able to send the 
+            // message to the room with the recipient and new chat id
+            //console.log("Sening the message to the room so our recipient can see it...");
+            socket.broadcast.to(result._id).emit('private-message', data.message);
+
+        }
+        else{ // Otherwise if the message does not pertain to a new conversation continue with sending to already existing conversation 
+            socket.broadcast.to(data.chat_id).emit('private-message', data.message);
+        }
+    });
+    
+    
     
 });
 

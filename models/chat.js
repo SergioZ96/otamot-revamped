@@ -2,12 +2,12 @@ const mongoose = require('../config/database');
 const User = require('../models/user');
 
 const ChatSchema = mongoose.Schema({
-    users: [
-        {   username: String,
-            id: {   type: mongoose.Schema.Types.ObjectId,
+    users: [{   
+            id : {   
+                    type: mongoose.Schema.Types.ObjectId,
                     ref: "User"
                 }
-        }
+            }
     ],
     messages: [
         {
@@ -39,11 +39,19 @@ ChatSchema.statics.createChat = async function(newChat) {
 
 ChatSchema.statics.getChats = async function(user_id) {
     try{
-        const chats = await Chat.find({"users": {$in: [user_id]}}).exec();
+        const chats = await Chat.find({"users": {$elemMatch: { "_id": user_id }}})
+                                .populate({
+                                            path: "users", 
+                                            populate: { 
+                                                path: '_id', model: 'User'
+                                            }
+                                        })
+                                .exec();
         return chats;
     }
 
     catch(err){ throw err; }
 }
+
 
 const Chat = module.exports = mongoose.model('Chat', ChatSchema);

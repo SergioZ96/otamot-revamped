@@ -1,7 +1,7 @@
 <div class="main-container">
-    <app-sidenav></app-sidenav>
-    <app-chat></app-chat>
-    <app-modal></app-modal>
+    <app-sidenav [convos]='chat_list'></app-sidenav>
+    <app-chat [convos]='chat_list'></app-chat>
+    <app-modal [convos]='chat_list'></app-modal>
 </div>
 
 <!-- <section>

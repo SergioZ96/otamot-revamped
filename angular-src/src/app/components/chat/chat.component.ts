@@ -1,4 +1,4 @@
-import { Component, Renderer2, OnInit } from '@angular/core';
+import { Component, Renderer2, OnInit, Input } from '@angular/core';
 import { WebsocketService } from '../../services/websocket.service';
 import { ChatService } from '../../services/chat.service';
 import dateFormat from 'dateformat';
@@ -11,14 +11,16 @@ import { Chat } from 'src/app/interfaces/chat';
   styleUrls: ['./chat.component.css']
 })
 export class ChatComponent implements OnInit {
+  @Input() convos: Chat[];
   message: string;
-  selectedUser: String;
   chat_id: string;
   chat: Chat;
   chat_recip: string;
+  recip_id: string;
+  recip_username: string;
 
   constructor(private webSocketService: WebsocketService, 
-              private chatService: ChatService,
+              public chatService: ChatService,
               private renderer: Renderer2) { }
               /* The Renderer2 API allows us to manipulate elements of our app without having to touch
                   the DOM directly. This is the recommended approach becuase it then makes it easier 
@@ -28,27 +30,45 @@ export class ChatComponent implements OnInit {
 
   ngOnInit(): void {
 
-    /* 
-      Here, we subscribe to an Observable from ChatService which allows us to receive any change
-      to the selected chat by providing a chat id from the thumbnail component.
-        1. Subscribes to the Observable where data contains the current chat id we are on
-        2. We loop through the shared _chats_array until we find the matching chat id
-        3. We assign that found chat to our local chat variable and can display any property,
-           including messages to the front end
-    */
+    /* receives updated data as the current recipient the user is talking to */
     this.chatService.receiveSubject().subscribe( data => {
-      this.chat_id = data;
+      this.recip_id = data[0];
+      this.recip_username = data[1];
+      this.chat_id = data[2];
 
-      this.chatService._chats_array.forEach( chat => {
-        if(chat.chat_id == this.chat_id){
-          this.chat = chat;
-        }
-      });
+      if(this.chat_id == "nochat"){
+        this.webSocketService.listen('newroom-chatid').subscribe((newroom_chatid) => {
+          console.log(newroom_chatid);
+          this.chatService.updateSubject(newroom_chatid);
+        });
+      }
+
+      
     });
-    
-    /* this.webSocketService.listen("receive-message").subscribe((data) => {
+
+    // Receives information from the new chat modal of the recipient the user wishes to talk to
+    this.chatService.receiveModal().subscribe((data) => {
+      this.recip_id = data[0];
+      this.chat_recip = data[1];
+    });
+   
+
+    this.webSocketService.listen('join-room').subscribe((newchat_id) => {
+      console.log("joining a new room");
+      this.webSocketService.emit('join-room', newchat_id);
+      this.chatService.triggerEvent('REQ_UPDATED_ARRAY');
+    });
+
+    this.webSocketService.listen('private-message').subscribe((data) => {
       console.log(data);
+    });
+
+
+    /* this.webSocketService.listen('newroom-chatid').subscribe( (newchat_id) => {
+      this.chatService.updateSubject(newchat_id);
     }); */
+
+    
 
   
   }
@@ -57,6 +77,7 @@ export class ChatComponent implements OnInit {
 
 
   sendMessage(message: string) {
+    
     // Here, we select our div that holds the messages to be displayed
     let message_container = this.renderer.selectRootElement('#messages', true);
 
@@ -75,39 +96,41 @@ export class ChatComponent implements OnInit {
     //this.renderer.appendChild(message_element, span_element); // adds span to div element
     //this.renderer.appendChild(message_container, message_element); // adds div element to message container
     this.renderer.appendChild(message_container, span_element);
+    //console.log(this.chat);
+    /* if(this.chat){
+      let recipients = this.chat.users;
+      console.log(recipients);
+    } 
+    else{
 
-    let recipients = this.chat.users;
-    this.webSocketService.emit('send-message',{recipients, message });
-
-
-
-    /* let user = this.chatService.selectedUser;
-    let chat_id = this.chatService.selectedChat;
+    } */
+    let user = JSON.parse(localStorage.getItem('user'));
     let now = new Date();
     let datetime = dateFormat(now, "mm-dd-yy h:MM:ss TT");
-    
-    const message_info = {
-      user,
-      
-      message: this.message,
-      datetime
+    //console.log(user.id);
+    //if( this.chat_recip)
+
+    let socket_message = { 
+      author_id: user.id ,
+      recipient_id: this.recip_id, 
+      chat_id: this.chat_id, 
+      date_time: datetime, 
+      message, 
+      newchat: false
     };
-    this.chatService.send(message_info).subscribe((data) => {
-      if(data.success){
-        console.log('Message sent');
-        console.log(data.result);
-      }
-      else{
-        console.log("Message was not sent");
-      }
-    }); */
+
+    if(this.chat_id == "nochat"){
+      socket_message.newchat = true;
+      this.webSocketService.emit('private-message', socket_message);
+      
+    }
+    else{
+      this.webSocketService.emit('private-message', socket_message);
+    }
+    //this.webSocketService.emit('message', socket_message);
+    
+
   }
 
-  /* 
-    Just some necessary JS code...
-  */
-   
-
   
-
 }
